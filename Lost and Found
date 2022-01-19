@@ -1,0 +1,284 @@
+"""
+File:   lost_and_found.py
+Author:  Atyub Ahmad
+Date:    11/9/2021
+Description: Creating a game with a player moving around a grid finding
+             cool items to be able to open doors/secrets and being able to go to the x to win
+
+"""
+
+"""
+"""
+
+import json
+
+
+USE = 'e'
+EMPTY = ''
+FLOOR = '_'
+EXIT = 'x'
+DOOR = 'd'
+SECRET = 's'
+WALL = '*'
+ITEMS = 'i'
+STARTING_LOCATION = 'start'
+
+
+def load_map(map_file_name):
+    """
+        When a map file name is passed the file will load the grid and return it.
+        Should you modify this function? No you shouldn't.
+
+    :param map_file_name: a string representing the file name.
+    :return: a 2D list which contains the current map.
+    """
+    with open(map_file_name) as map_file:
+        the_map = json.loads(map_file.read())
+
+    return the_map
+
+
+def print_map(the_grid, user_pos):
+    """
+
+    :param the_grid: creates the 2-d grid which is the map
+    :param user_pos: keeps track of the user_position throughout the grid
+    :return: prints the map
+    """
+    # Unpacking the variable to get specific row and col
+    user_row, user_col = user_pos
+    # For loop to go go through the 2-d array and print it properly
+    for row_index in range(len(the_grid)):
+        for col_index in range(len(the_grid[row_index])):
+            # Printing 'i' when necessary
+            if the_grid[row_index][col_index]['items']:
+                print(ITEMS, end=' ')
+            # Printing the wall when needed
+            elif the_grid[row_index][col_index]['symbol'] == SECRET:
+                print(WALL, end=" ")
+            # Printing the player at the specific user position
+            elif row_index == user_row and col_index == user_col:
+                print('\u1330', end=' ')
+            # printing the necessary symbol needed - such as floor or door
+            else:
+                print(the_grid[row_index][col_index]['symbol'], end=" ")
+        print()
+
+
+def lost_and_found(the_grid):
+    """
+    This function runs the game and takes in user-input
+    :param the_grid: The 2-d array which is the map
+    :return:
+    """
+    # Creating player inventory
+    inventory = []
+    # Setting user position
+    user_pos = [0, 0]
+    # Checking if there is a custom start location
+    for row in range(len(the_grid)):
+        for col in range(len(the_grid[row])):
+            if STARTING_LOCATION in the_grid[row][col] and the_grid[row][col][STARTING_LOCATION]:
+                user_pos = [row, col]
+    # Boo lean to run the game
+    run_game = True
+    # While loop to go through each action of the game until it is finsihed
+    while run_game:
+        # Passing through the print map function
+        print_map(the_grid, user_pos)
+        # Letting the user know what their inventory is
+        print("Your inventory is: ", end=" ")
+        print(", ".join(inventory))
+        # Getting user input for their movement
+        user_action = input("Enter Move (wasd) (e to activate doors or secrets and 'exit' to quit): ")
+        # Setting an exit command if user wants to quit the game
+        if user_action == 'exit':
+            run_game = False
+        # Making the e command work
+        if user_action == 'e':
+            # Calling the function that deals with the 'e' command
+            secrets_doors(user_pos, the_grid, inventory)
+        else:
+            # Calling the function that updates user movement
+            user_pos = player_movement(user_pos, user_action, the_grid, inventory)
+        # Unpacking user position
+        row, col = user_pos
+        # Creating the way for the user to win and outputting the print statement
+        if the_grid[row][col]['symbol'] == EXIT:
+            print("Congratulations! You win!")
+            run_game = False
+
+
+def player_movement(user_pos, user_action, the_grid, inventory):
+    """
+    This function deals with player movement based off of their input and check if their move is within the boundaries
+    :param user_pos: the current user position
+    :param user_action: the action they are making - (w,a,s,d)
+    :param the_grid: The 2-d array which is the map
+    :param inventory: The players inventory which contains the items found
+    :return: The row and col the user wants to move to
+    """
+    # w subtract row
+    # s add row
+    # a subtract column
+    # d add column
+    # Creating a list of allowed spaces
+    allowed_spaces = [FLOOR, EXIT]
+    # Unpacking user position
+    row, col = user_pos
+    # User input for w (up) and checking if its within bounds
+    if user_action == 'w' and row - 1 >= 0 and the_grid[row - 1][col]['symbol'] in allowed_spaces:
+        # Moving the player to the proper position
+        row -= 1
+    # User input for s (down) and checking if its within bounds
+    elif user_action == 's' and row + 1 < len(the_grid) and the_grid[row + 1][col]['symbol'] in allowed_spaces:
+        # Moving the player to the proper position
+        row += 1
+    # User input for a (left) and checking if its within bounds
+    elif user_action == 'a' and col - 1 >= 0 and the_grid[row][col - 1]['symbol'] in allowed_spaces:
+        # Moving the player to the proper position
+        col -= 1
+    # User input for d (right) and checking if its within bounds
+    elif user_action == 'd' and col + 1 < len(the_grid[row]) and the_grid[row][col + 1]['symbol'] in allowed_spaces:
+        # Moving the player to the proper position
+        col += 1
+    # If player moves on an item space, adds the item to their inventory
+    inventory.extend(the_grid[row][col]['items'])
+    the_grid[row][col]['items'] = []
+    # Returning player's row and col that they are on
+    return [row, col]
+
+
+def secrets_doors(user_pos, the_grid, inventory):
+    """
+
+    :param user_pos: The current user position
+    :param the_grid: The 2-d array which is the map
+    :param inventory: The player inventory which contains items found
+    :return: Doors or secrets open or found
+
+    """
+    # Unpacking user position
+    row, col = user_pos
+    """
+    ___
+    _._
+    ___
+    
+    top left: row - 1 and col - 1
+    top: row - 1
+    top right: row - 1 and col + 1
+    left: col - 1
+    right: col + 1
+    bottom left: row + 1 and col - 1
+    bottom: row + 1
+    bottom right: row + 1 and col + 1
+    
+    """
+    # Creating variables to deal with top left check of the grid
+    top_left_row = row - 1
+    top_left_col = col - 1
+    # Making sure it is within bounds
+    if top_left_row > -1 and top_left_col > -1:
+        # Calling the function that checks if the necessary requirements to open the door or secret has been found
+        secret_door_check(the_grid, inventory, top_left_row, top_left_col)
+
+    # Creating variables to deal with top check of the grid
+    top = row - 1
+    # Making sure it is within bounds
+    if top > -1:
+        # Calling the function that checks if the necessary requirements to open the door or secret has been found
+        secret_door_check(the_grid, inventory, top, col)
+
+    # Creating variables to deal with bottom check of the grid
+    bottom = row + 1
+    # Making sure it is within bounds
+    if bottom < len(the_grid):
+        # Calling the function that checks if the necessary requirements to open the door or secret has been found
+        secret_door_check(the_grid, inventory, bottom, col)
+
+    # Creating variables to deal with top right check of the grid
+    top_right_row = row - 1
+    top_right_col = col + 1
+    # Making sure it is within bounds
+    if top_right_row > -1 and top_right_col < len(the_grid[top_right_row]):
+        # Calling the function that checks if the necessary requirements to open the door or secret has been found
+        secret_door_check(the_grid, inventory, top_right_row, top_right_col)
+
+    # Creating variables to deal with left side of the player, check of the grid
+    left = col - 1
+    # Making sure it is within bounds
+    if left > -1:
+        # Calling the function that checks if the necessary requirements to open the door or secret has been found
+        secret_door_check(the_grid, inventory, row, left)
+
+    # Creating variables to deal with right side of the player, check of the grid
+    right = col + 1
+    # Making sure it is within bounds
+    if right < len(the_grid[row]):
+        # Calling the function that checks if the necessary requirements to open the door or secret has been found
+        secret_door_check(the_grid, inventory, row, right)
+
+    # Creating variables to deal with bottom left check of the grid
+    bottom_left_row = row + 1
+    bottom_left_col = col - 1
+    # Making sure it is within bounds
+    if bottom_left_row < len(the_grid) and bottom_left_col > -1:
+        # Calling the function that checks if the necessary requirements to open the door or secret has been found
+        secret_door_check(the_grid, inventory, bottom_left_row, bottom_left_col)
+
+    # Creating variables to deal with bottom right check of the grid
+    bottom_right_row = row + 1
+    bottom_right_col = col + 1
+    # Making sure it is within bounds
+    if bottom_right_row < len(the_grid) and bottom_right_col < len(the_grid[bottom_right_row]):
+        # Calling the function that checks if the necessary requirements to open the door or secret has been found
+        secret_door_check(the_grid, inventory, bottom_right_row,  bottom_right_col)
+
+
+def secret_door_check(the_grid, inventory, row, col):
+    """
+
+    :param the_grid: The 2-d array which is the map
+    :param inventory: The user inventory with items found
+    :param row: The row the user is on
+    :param col: The column the user is on
+    :return: If a secret is found and if the door can be open based on requirements needed to open them.
+    """
+    # Checking if there is a secret in the square area
+    if the_grid[row][col]['symbol'] == SECRET:
+        # Boo lean for requirements
+        requirements = True
+        # Conditional to check if 'requires' is in the certain position in the square check
+        if 'requires' in the_grid[row][col]:
+            # For loop to check around the player for requires
+            for i in range(len(the_grid[row][col]['requires'])):
+                # Checking if the requirement is in the players inventory
+                if the_grid[row][col]['requires'][i] not in inventory:
+                    requirements = False
+        # If the requirement is in the player inventory, this lets them know they found a secret and changes it to a door
+        if requirements:
+            print("You found a secret!")
+            the_grid[row][col]['symbol'] = DOOR
+    # Checking if there is a door in the area of the square
+    elif the_grid[row][col]['symbol'] == DOOR:
+        requirements = True
+        # Conditional to check if 'requires' is in the certain position in the square check
+        if 'requires' in the_grid[row][col]:
+            # For loop to check around the player for requires
+            for i in range(len(the_grid[row][col]['requires'])):
+                # Checking if the requirement is in the players inventory
+                if the_grid[row][col]['requires'][i] not in inventory:
+                    requirements = False
+                    print(the_grid[row][col]['requires'][i], "is required")
+        # If the requirement is in the player inventory, this opens the door
+        if requirements:
+            the_grid[row][col]['symbol'] = FLOOR
+
+
+if __name__ == '__main__':
+    map_file_name = input('What map do you want to load? ')
+    the_game_map = load_map(map_file_name)
+    if the_game_map:
+        lost_and_found(the_game_map)
+
