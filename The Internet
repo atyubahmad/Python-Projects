@@ -1,0 +1,342 @@
+"""
+File:    the_internet.py
+Author:  Atyub Ahmad
+Date:    11/30/21
+Description: This project creates 'the internet' which allows the user to create servers and create connections between
+             them. Also you can check the ping time to a server.
+
+"""
+
+
+def create_server(server_name, ip_v4_address, ip_dict, name_dict):
+    """
+    Creates user-inputted servers
+    :param server_name: Name of the server
+    :param ip_v4_address: The server's IP address
+    :param ip_dict: The dictionary with the IP addresses' as the keys
+    :param name_dict: The dictionary with the server name's as the keys
+    :return: created server
+    """
+    # Conditional that checks if the IP address is in the correct format
+    if validate_ip(ip_v4_address):
+        # Conditional to make sure each IP address is unique and then storing the information in the dictionaries
+        if ip_v4_address not in ip_dict:
+            ip_dict[ip_v4_address] = server_name
+            name_dict[server_name] = ip_v4_address
+            print("Success: A server with the name",  server_name, "was created at ip", ip_v4_address)
+        else:
+            print("Duplicate IP")
+    else:
+        print("IP address is invalid.")
+
+
+def validate_ip(ip_v4_address):
+    """
+    Checks if IP address format is correct
+    :param ip_v4_address: User inputted IP address
+    :return: If the IP address format is valid or not
+    """
+
+    valid_ip = True
+    # Splitting the string into different parts based off the periods
+    ip_parts = ip_v4_address.split(".")
+    # Checking to see if the IP address has 4 different parts
+    if len(ip_parts) == 4:
+        # For loop to check if the IP numbers are within range
+        for i in ip_parts:
+            if int(i) < 0 or int(i) > 255:
+                valid_ip = False
+    else:
+        valid_ip = False
+    # Returning the status of the IP
+    return valid_ip
+
+
+def create_connection(server_1, server_2, connection_time, name_dict, connection_dict):
+    """
+    Creates connections between two existing servers
+    :param server_1: First server
+    :param server_2: Second server
+    :param connection_time: connection time between the two servers
+    :param name_dict: Dictionary with all the servers
+    :param connection_dict: Dictionary with the connected servers, including their connection time
+    :return: Connected servers
+    """
+    # Checking to see if both servers exist
+    if server_1 in name_dict.keys() and server_2 in name_dict.keys():
+        # Checking the connections the server has and then creating a connection place
+        if server_1 not in connection_dict:
+            connection_dict[server_1] = []
+        # Helps check if the two servers are already connected
+        connections = dict(connection_dict[server_1])
+
+        if server_2 in connections.keys():
+            print("Servers are already connected")
+        else:
+            # Creating the connection between the two servers
+            connection_dict[server_1].append((server_2, connection_time))
+            # Same process in the 'vice-versa' way
+            if server_2 not in connection_dict:
+                connection_dict[server_2] = []
+
+            connection_dict[server_2].append((server_1, connection_time))
+
+            print("Success: A server with name", server_1, "is now connected to", server_2)
+
+    else:
+        print("Unknown server(s) can't be connected")
+    # Returning the dictionary full of the connections
+    return connection_dict
+
+
+def set_server(target_server, ip_dict, name_dict, current_ip):
+    """
+    Sets a base server
+    :param target_server: The server being set
+    :param ip_dict: Dictionary with the IP address
+    :param name_dict: Dictionary with the Server names
+    :param current_ip: The current IP of the server
+    :return: The current IP
+    """
+    # Checking if the server exists
+    if target_server in ip_dict.keys():
+        current_ip = target_server
+    # Checking if the server exists
+    elif target_server in name_dict.keys():
+        # Setting the IP to the right server
+        current_ip = name_dict[target_server]
+
+    else:
+        print("Unknown server can't be set.")
+    # Checking if the IP exists and then selecting it
+    if current_ip in ip_dict.keys():
+        print("Server", ip_dict[current_ip], "selected.")
+    else:
+        print("No server set")
+    # Returns the selected IP
+    return current_ip
+
+
+def display_servers(ip_dict, name_dict, connection_dict):
+    """
+    Displays all of the created servers and their connections
+    :param ip_dict: Dictionary with all of the IPs
+    :param name_dict: Dictionary with all of the Server names
+    :param connection_dict: Dictionary with all of the server connections
+    :return: shows all of the servers and their connections
+    """
+    # For loop to print out the base server
+    for ip in ip_dict.keys():
+        server_name = ip_dict[ip]
+        print(server_name, "\t", ip)
+        # Checking if the base server has connections
+        if server_name in connection_dict:
+            # For loop to output all of the base server's connections
+            for connection in connection_dict[server_name]:
+                # Unpacking the tuple connection
+                connection_name, connection_time = connection
+                connection_ip = name_dict[connection_name]
+                print("\t", connection_name, "\t", connection_ip, "\t", connection_time)
+
+
+def path_to_server(target_server, current_server, connection_dict, solution_list, visited):
+    """
+    Creating the recursive function for both traceroute and ping
+    :param target_server: Server that's being traced/pinged
+    :param current_server: The server that is set
+    :param connection_dict: Dictionary with all of the connections
+    :param solution_list: List of the path
+    :param visited: Checks which path has been visited
+    :return: the path that is needed to output the correct traceroute or ping
+    """
+    # Creating a list of the visited server paths
+    visited.append(current_server)
+    # Adds to the solution list if the path works with the starting server and the destination server
+    if current_server == target_server:
+        return solution_list
+    # Checking the connections
+    elif current_server in connection_dict:
+
+        connections = connection_dict[current_server]
+
+        # For loop to go through all of the connections
+        for conn in connections:
+            # Unpacking the tuple
+            conn_name, conn_time = conn
+            # Checking to see if the path was visited
+            if conn_name not in visited:
+                current_server = conn_name
+                # Making a list copy so it doesn't ruin the original list
+                potential_solutions = solution_list.copy()
+                # Appending the potential connections to the list
+                potential_solutions.append(conn)
+                # Setting the variable equal to the function to iterate properly
+                potential_solutions = path_to_server(target_server, current_server, connection_dict, potential_solutions, visited)
+
+                if potential_solutions:
+                    # Returning the potential connections
+                    return potential_solutions
+
+
+def convert_to_name(server, ip_dict, name_dict):
+    """
+    Helper function to properly execute server name's or IP's for traceroute/ping
+    :param server: user-inputted server/IP
+    :param ip_dict: Dictionary with all of the IP's
+    :param name_dict: Dictionary with all the server names
+    :return: returning the correct name/ip
+    """
+    # For server name
+    if server in name_dict:
+        return server
+    # For server IP address
+    elif server in ip_dict:
+        return ip_dict[server]
+    else:
+        print("Error: Invalid server")
+
+        return
+
+
+def traceroute(target_server, current_server, connection_dict, name_dict, user_input=''):
+    """
+    Outputs the traceroute of the needed server
+    :param target_server: Server wanted
+    :param current_server: current server selected
+    :param connection_dict: Dictionary with all of the connections
+    :param name_dict: Dictionary with all of the server names
+    :param user_input: The user input
+    :return: the traceroute
+    """
+    # Setting user input
+    if user_input == '':
+        user_input = target_server
+    # Substantiating solution list
+    solution_list = []
+    solution_list.append((current_server, 0))
+    # Substantiating visited list
+    visited = []
+    # Setting the list equal to the path function to get the correct path
+    solution_list = path_to_server(target_server, current_server, connection_dict, solution_list, visited)
+    # Conditional to check if there is a solution
+    if solution_list:
+        # Outputting the first statement
+        print("Tracing route to ", target_server, f'[{user_input}]')
+        # For loop to properly output the connections for the traceroute
+        for i in range(len(solution_list)):
+            # Unpacking the tuple
+            server_name, connection_time = solution_list[i]
+
+            print(i, "\t", connection_time, "\t", name_dict[server_name], "\t", server_name)
+        print("Trace complete.")
+    else:
+        print("Unable to resolve target system name", target_server)
+
+
+def ping(target_server, current_server, connection_dict, name_dict):
+    """
+    Checks the ping of the wanted server
+    :param target_server: Server wanted
+    :param current_server: current server selected
+    :param connection_dict: Dictionary with all of the connections
+    :param name_dict: Dictionary with all server names
+    :return: the ping time
+    """
+    # Substantiating solution list
+    solution_list = []
+    solution_list.append((current_server, 0))
+    # Substantiating visited list
+    visited = []
+    # Setting the list equal to the path function to get the correct path
+    solution_list = path_to_server(target_server, current_server, connection_dict, solution_list, visited)
+    # Conditional to check if there is a solution
+    if solution_list:
+        # Setting the base ping to 0
+        ping_time = 0
+        # For loop to go through all of the connections
+        for i in range(len(solution_list)):
+            # Unpacking the tuple
+            server_name, connection_time = solution_list[i]
+            # Adding all of the connection times to get the final ping time
+            ping_time += connection_time
+            # Outputting it
+        print("Reply from ", name_dict[current_server], "time =", ping_time, "ms")
+    else:
+        print("Unable to resolve target system name", target_server)
+
+
+def init_internet():
+    """
+    Runs through all of the user inputted commands
+    :return: Whatever function is necessary
+    """
+    # Creating all of the different dictionaries
+    ip_dict = {}
+    connection_dict = {}
+    name_dict = {}
+    # Creating the current ip as a empty string
+    current_ip = ""
+    run = True
+    # While loop to run through everything until 'quit' is inputted
+    while run:
+        user_input = input(">>> ").split()
+
+        if user_input[0] == 'quit':
+            run = False
+        else:
+            command = user_input[0]
+            # Runs the creates server command
+            if command == "create-server":
+                server_name = user_input[1]
+                server_ip = user_input[2]
+                create_server(server_name, server_ip, ip_dict, name_dict)
+            # Runs the set server command
+            if command == "set-server":
+                server_name = user_input[1]
+                current_ip = set_server(server_name, ip_dict, name_dict, current_ip)
+            # Runs the create connection command
+            if command == "create-connection":
+                server_1 = user_input[1]
+                server_2 = user_input[2]
+                connection_time = int(user_input[3])
+                connection_dict = create_connection(server_1, server_2, connection_time, name_dict, connection_dict)
+            # Runs the display servers command
+            if command == "display-servers":
+                display_servers(ip_dict, name_dict, connection_dict)
+
+            # Made ip-config function into here since it is small
+            if command == "ip-config":
+                # If there is a current ip it outputs the IP
+                if current_ip:
+                    print(ip_dict[current_ip], "\t", current_ip)
+                # If no IP outputs the error message
+                else:
+                    print("No current IP")
+            # Runs the traceroute command
+            if command == "traceroute" or command == "tracert":
+                # Checks if there is a current IP
+                if current_ip:
+                    # Converting the server/IP to work in the the other functions
+                    target_server = convert_to_name(user_input[1], ip_dict, name_dict)
+                    # Setting the current server
+                    current_server = ip_dict[current_ip]
+                    if target_server:
+                        traceroute(target_server, current_server, connection_dict, name_dict, user_input[1])
+                else:
+                    print("No current server/IP")
+
+            if command == 'ping':
+                # Checks if there is a current IP
+                if current_ip:
+                    # Converting the server/IP to work in the the other functions
+                    target_server = convert_to_name(user_input[1], ip_dict, name_dict)
+                    # Setting the current server
+                    current_server = ip_dict[current_ip]
+                    if target_server:
+                        ping(target_server, current_server, connection_dict, name_dict)
+                else:
+                    print("No current IP")
+
+
+if __name__ == '__main__':
+    init_internet()
