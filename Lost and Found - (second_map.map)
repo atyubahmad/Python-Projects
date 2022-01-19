@@ -1,0 +1,431 @@
+""" This is a file that you input with the 'Lost and Found' game to be able to play it. This file is map 2/3."""
+[
+	[
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		}
+	],
+	[
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": [
+				"Blue-Key"
+			]
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		}
+	],
+	[
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		}
+	],
+	[
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "d",
+			"items": []
+		}
+	],
+	[
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		}
+	],
+	[
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "d",
+			"items": [],
+			"requires": [
+				"Blue-Key"
+			]
+		},
+		{
+			"symbol": "d",
+			"items": [],
+			"requires": [
+				"Blue-Key"
+			]
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		}
+	],
+	[
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		}
+	],
+	[
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "s",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		}
+	],
+	[
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		}
+	],
+	[
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "x",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "*",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		},
+		{
+			"symbol": "_",
+			"items": []
+		}
+	]
+]
